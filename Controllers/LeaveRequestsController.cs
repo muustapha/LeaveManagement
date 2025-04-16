@@ -64,6 +64,12 @@ namespace LeaveManagement.Controllers
 
             return NoContent();
 }
+[HttpGet("filter")]
+public async Task<ActionResult<IEnumerable<LeaveRequestOutputDTO>>> Filter([FromQuery] LeaveRequestFilterDTO filter)
+{
+    var result = await _leaveService.FilterAsync(filter);
+    return Ok(result);
+}
 
 
     }

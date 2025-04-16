@@ -10,6 +10,7 @@ namespace LeaveManagement.Models.Services
         Task<LeaveRequestOutputDTO?> UpdateAsync(int id, LeaveRequestInputDTO dto);
         Task<bool> DeleteAsync(int id);
         Task<bool> UpdateStatusAsync(int id, string status);
+        Task<IEnumerable<LeaveRequestOutputDTO>> FilterAsync(LeaveRequestFilterDTO filter);
 
     }
 }
