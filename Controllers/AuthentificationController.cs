@@ -3,6 +3,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Microsoft.Extensions.Options;
 
 namespace LeaveManagement.Controllers
 {
@@ -10,20 +11,25 @@ namespace LeaveManagement.Controllers
     [Route("api/authentification")]
     public class AuthentificationController : ControllerBase
     {
-        // Clé secrète (à extraire en configuration en production)
-        private const string SecretKey = "this_is_a_super_secret_key_for_demo_only";
+        private readonly JwtSettings _jwtSettings;
+        public AuthentificationController(IOptions<JwtSettings> jwtSettings)
+        {
+            _jwtSettings = jwtSettings.Value;
+        }
 
-        /// <summary>
-        /// Point de terminaison de connexion pour obtenir un JWT.
-        /// Envoie le role souhaité dans le corps (e.g. "Employee" ou "Manager").
-        /// </summary>
         [HttpPost("login")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult Login([FromBody] string role)
         {
             if (string.IsNullOrWhiteSpace(role))
                 return BadRequest("Le rôle est requis pour la connexion.");
 
-            var key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(SecretKey));
+            var validRoles = new[] { "Employee", "Manager" };
+            if (!validRoles.Contains(role))
+                return BadRequest("Rôle invalide. Les rôles valides sont : Employee, Manager.");
+
+            var key   = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_jwtSettings.SecretKey));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var claims = new[]
@@ -33,8 +39,8 @@ namespace LeaveManagement.Controllers
             };
 
             var token = new JwtSecurityToken(
-                claims: claims,
-                expires: DateTime.UtcNow.AddHours(1),
+                claims:             claims,
+                expires:            DateTime.UtcNow.AddHours(_jwtSettings.TokenExpiryInHours),
                 signingCredentials: creds
             );
 

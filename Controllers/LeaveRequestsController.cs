@@ -1,77 +1,61 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using LeaveManagement.Services;
 using LeaveManagement.Models;
+using LeaveManagement.Services;
 
 namespace LeaveManagement.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class LeaveRequestsController : ControllerBase
     {
         private readonly ILeaveRequestService _leaveService;
-
         public LeaveRequestsController(ILeaveRequestService leaveService)
-        {
-            _leaveService = leaveService;
-        }
+            => _leaveService = leaveService;
 
+        [AllowAnonymous]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<LeaveRequestOutputDTO>>> GetLeaveRequests()
-        {
-            var results = await _leaveService.GetAllAsync();
-            return Ok(results);
-        }
+            => Ok(await _leaveService.GetAllAsync());
 
+        [AllowAnonymous]
         [HttpGet("{id}")]
         public async Task<ActionResult<LeaveRequestOutputDTO>> GetLeaveRequest(int id)
         {
-            var leave = await _leaveService.GetByIdAsync(id);
-            if (leave == null) return NotFound();
-            return Ok(leave);
+            var dto = await _leaveService.GetByIdAsync(id);
+            return dto is null ? NotFound() : Ok(dto);
         }
 
+        [Authorize(Roles = "Employee")]
         [HttpPost]
-        public async Task<ActionResult<LeaveRequestOutputDTO>> CreateLeaveRequest(LeaveRequestInputDTO dto)
+        public async Task<ActionResult<LeaveRequestOutputDTO>> CreateLeaveRequest([FromBody] LeaveRequestInputDTO dto)
         {
             var created = await _leaveService.CreateAsync(dto);
             return CreatedAtAction(nameof(GetLeaveRequest), new { id = created.Id }, created);
         }
 
+        [Authorize(Roles = "Employee")]
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateLeaveRequest(int id, LeaveRequestInputDTO dto)
+        public async Task<IActionResult> UpdateLeaveRequest(int id, [FromBody] LeaveRequestInputDTO dto)
         {
             var updated = await _leaveService.UpdateAsync(id, dto);
-            if (updated == null) return NotFound();
-
-            return Ok(updated);
+            return updated is null ? NotFound() : Ok(updated);
         }
 
+        [Authorize(Roles = "Employee")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteLeaveRequest(int id)
-        {
-             var deleted = await _leaveService.DeleteAsync(id);
-             if (!deleted) return NotFound();
+            => (await _leaveService.DeleteAsync(id)) ? NoContent() : NotFound();
 
-             return NoContent();
-        }
-       [HttpPatch("{id}/status")]
+        [Authorize(Roles = "Employee,Manager")]
+        [HttpGet("filter")]
+        public async Task<ActionResult<IEnumerable<LeaveRequestOutputDTO>>> Filter([FromQuery] LeaveRequestFilterDTO filter)
+            => Ok(await _leaveService.FilterAsync(filter));
+
+        [Authorize(Roles = "Manager")]
+        [HttpPatch("{id}/status")]
         public async Task<IActionResult> UpdateStatus(int id, [FromBody] LeaveRequestStatusUpdateDTO dto)
-       {
-            var result = await _leaveService.UpdateStatusAsync(id, dto.Status);
-            if (!result)
-           
-            return BadRequest("Impossible de mettre à jour le statut.");
-
-            return NoContent();
-}
-[HttpGet("filter")]
-public async Task<ActionResult<IEnumerable<LeaveRequestOutputDTO>>> Filter([FromQuery] LeaveRequestFilterDTO filter)
-{
-    var result = await _leaveService.FilterAsync(filter);
-    return Ok(result);
-}
-
-
+            => (await _leaveService.UpdateStatusAsync(id, dto.Status)) ? NoContent() : BadRequest();
     }
 }
-
