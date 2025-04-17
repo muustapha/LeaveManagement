@@ -1,10 +1,11 @@
-using LeaveManagement.Models.Datas;
-using LeaveManagement.Models.DTOs;
+using LeaveManagement.Entities;
+using LeaveManagement.Models;
+using LeaveManagement.DbContexts;
 using LeaveManagement.Validators;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
 
-namespace LeaveManagement.Models.Services
+namespace LeaveManagement.Services
 {
     public class LeaveRequestService : ILeaveRequestService
     {

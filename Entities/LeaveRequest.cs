@@ -1,4 +1,4 @@
-namespace LeaveManagement.Models.Datas
+namespace LeaveManagement.Entities
 {
     public enum LeaveType {  Default, Annual, Sick, Other }
     public enum LeaveStatus { Pending, Approved, Rejected }

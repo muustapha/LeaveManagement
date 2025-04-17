@@ -1,6 +1,6 @@
-using LeaveManagement.Models.DTOs;
+using LeaveManagement.Models;
 
-namespace LeaveManagement.Models.Services
+namespace LeaveManagement.Services
 {
     public interface ILeaveRequestService
     {

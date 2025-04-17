@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-using LeaveManagement.Models.Datas;
+using LeaveManagement.Entities;
 
-namespace LeaveManagement.Models.Datas
+namespace LeaveManagement.DbContexts
 {
     public class AppDbContext : DbContext
     {

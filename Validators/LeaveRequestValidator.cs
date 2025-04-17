@@ -1,5 +1,6 @@
-using LeaveManagement.Models.Datas;
-using LeaveManagement.Models.DTOs;
+using LeaveManagement.Entities;
+using LeaveManagement.DbContexts;
+using LeaveManagement.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace LeaveManagement.Validators

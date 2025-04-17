@@ -1,4 +1,4 @@
-namespace LeaveManagement.Models.DTOs
+namespace LeaveManagement.Models
 {
     // DTO utilisé pour la création (entrée)
     public class LeaveRequestInputDTO

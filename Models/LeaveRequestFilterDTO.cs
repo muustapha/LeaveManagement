@@ -1,4 +1,4 @@
-namespace LeaveManagement.Models.DTOs
+namespace LeaveManagement.Models
 {
     public class LeaveRequestFilterDTO
     {

@@ -1,4 +1,4 @@
-namespace LeaveManagement.Models.Datas
+namespace LeaveManagement.Entities
 {
     public class Employee
     {

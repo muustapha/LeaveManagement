@@ -1,7 +1,15 @@
-using LeaveManagement.Models.Datas;
+using LeaveManagement.Entities;
+using LeaveManagement.DbContexts;
 using Microsoft.EntityFrameworkCore;
-using LeaveManagement.Models.Services;
+using LeaveManagement.Services;
 using LeaveManagement.Validators;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+
+
 var builder = WebApplication.CreateBuilder(args);
 
 // 🔧 Services
@@ -33,7 +41,7 @@ app.MapControllers();
 
 using (var scope = app.Services.CreateScope())
 {
-    var db = scope.ServiceProvider.GetRequiredService<LeaveManagement.Models.Datas.AppDbContext>();
+    var db = scope.ServiceProvider.GetRequiredService<LeaveManagement.DbContexts.AppDbContext>();
     db.Database.EnsureCreated();
 }
 

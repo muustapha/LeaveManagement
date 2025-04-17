@@ -1,8 +1,9 @@
 using AutoMapper;
-using LeaveManagement.Models.Datas;
-using LeaveManagement.Models.DTOs;
+using LeaveManagement.Entities;
+using LeaveManagement.Models;
+using LeaveManagement.DbContexts;
 
-namespace LeaveManagement.Models.Profiles
+namespace LeaveManagement.Profiles
 {
     public class MappingProfile : Profile
     {

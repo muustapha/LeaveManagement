@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using LeaveManagement.Models.Services;
-using LeaveManagement.Models.DTOs;
+using LeaveManagement.Services;
+using LeaveManagement.Models;
 
 namespace LeaveManagement.Controllers
 {
