@@ -2,7 +2,7 @@ using LeaveManagement;
 using LeaveManagement.DbContexts;            
 using LeaveManagement.Services;        
 using LeaveManagement.Validators;             
-
+using LeaveManagement.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;          
 using Microsoft.IdentityModel.Tokens;
