@@ -31,16 +31,30 @@ namespace LeaveManagement.Controllers
         [HttpPost]
         public async Task<ActionResult<LeaveRequestOutputDTO>> CreateLeaveRequest([FromBody] LeaveRequestInputDTO dto)
         {
-            var created = await _leaveService.CreateAsync(dto);
-            return CreatedAtAction(nameof(GetLeaveRequest), new { id = created.Id }, created);
+            try
+            {
+                var created = await _leaveService.CreateAsync(dto);
+                return CreatedAtAction(nameof(GetLeaveRequest), new { id = created.Id }, created);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [Authorize(Roles = "Employee")]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateLeaveRequest(int id, [FromBody] LeaveRequestInputDTO dto)
         {
-            var updated = await _leaveService.UpdateAsync(id, dto);
-            return updated is null ? NotFound() : Ok(updated);
+            try
+            {
+                var updated = await _leaveService.UpdateAsync(id, dto);
+                return updated is null ? NotFound() : Ok(updated);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [Authorize(Roles = "Employee")]
@@ -57,5 +71,21 @@ namespace LeaveManagement.Controllers
         [HttpPatch("{id}/status")]
         public async Task<IActionResult> UpdateStatus(int id, [FromBody] LeaveRequestStatusUpdateDTO dto)
             => (await _leaveService.UpdateStatusAsync(id, dto.Status)) ? NoContent() : BadRequest();
+
+        [Authorize(Roles = "Employee,Manager")]
+        [HttpGet("report")]
+        public async Task<ActionResult<IEnumerable<LeaveRequestReportDTO>>> GetReport([FromQuery] LeaveRequestReportFilterDTO filter)
+        {
+            var report = await _leaveService.GetReportAsync(filter);
+            return Ok(report);
+        }
+
+        [Authorize(Roles = "Manager")]
+        [HttpPost("{id}/approve")]
+        public async Task<IActionResult> Approve(int id)
+        {
+            var ok = await _leaveService.ApproveAsync(id);
+            return ok ? NoContent() : BadRequest("Impossible d’approuver cette demande.");
+        }
     }
 }

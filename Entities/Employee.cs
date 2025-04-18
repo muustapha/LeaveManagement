@@ -2,12 +2,11 @@ namespace LeaveManagement.Entities
 {
     public class Employee
     {
-        public int Id { get; set; }
-        public string? FullName { get; set; }
-        public string? Department { get; set; }
+        public int Id { get; set; }        
+        public string FullName { get; set; } = string.Empty;
+        public string Department { get; set; } = string.Empty;
         public DateTime JoiningDate { get; set; }
 
-        public ICollection<LeaveRequest>? LeaveRequests { get; set; }
+        public ICollection<LeaveRequest> LeaveRequests { get; set; } = new List<LeaveRequest>();
     }
 }
-

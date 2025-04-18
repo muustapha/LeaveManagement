@@ -1,0 +1,26 @@
+version: '3.8'
+services:
+  db:
+    image: alpine:latest
+    container_name: leave_db
+    # Conteneur factice pour monter le volume SQLite
+    volumes:
+      - dbdata:/data
+    command: ["sh", "-c", "while true; do sleep 3600; done"]
+
+  api:
+    build: .
+    container_name: leave_api
+    ports:
+      - "5000:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Data Source=/data/leave.db
+    volumes:
+      - dbdata:/data
+    depends_on:
+      - db
+
+volumes:
+  dbdata: 
+  # Volume nommé pour persister le fichier SQLite (leave.db)

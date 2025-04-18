@@ -13,7 +13,6 @@ namespace LeaveManagement.Entities
         public LeaveStatus Status { get; set; }
         public string? Reason { get; set; }
         public DateTime CreatedAt { get; set; }
-
-        public Employee? Employee { get; set; }
+        public Employee Employee { get; set; } = null!;
     }
 }
